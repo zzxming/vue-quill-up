@@ -1,0 +1,23 @@
+{
+  "type": "module",
+  "private": true,
+  "packageManager": "pnpm@8.14.3",
+  "workspaces": [
+    "packages/*",
+    "demos",
+    "scripts"
+  ],
+  "scripts": {
+    "build:theme": "pnpm -C ./packages/theme run build",
+    "lint": "eslint . --cache",
+    "lint:fix": "eslint . --fix",
+    "dev": "tsx ./scripts/dev.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@zzxming/eslint-config": "^0.0.7",
+    "eslint": "^9.6.0",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.0"
+  }
+}

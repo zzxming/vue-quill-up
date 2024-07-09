@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "rootDir": "../",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "paths": {
+      "vue-quill-up": ["../packages/vue-quill-up"],
+      "vue-quill-up/theme": ["../packages/theme"]
+    },
+    "resolveJsonModule": true,
+    "types": ["../index.d.ts"],
+    "allowJs": false,
+    "strict": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noEmit": true,
+    "removeComments": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "include": ["**/*", "../packages/**/*"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "lib": ["ESNext", "DOM"],
+    "skipLibCheck": true
+  },
+  "include": ["packages/**/*", "demos", "index.d.ts"],
+  "exclude": ["node_modules", "**/dist", "**/gulpfile.ts"]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@vue-quill-up/demos",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 5050"
+  },
+  "dependencies": {
+    "vue": "^3.0.0",
+    "vue-quill-up": "workspace:^"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.5.2",
+    "@vitejs/plugin-vue-jsx": "^3.1.0",
+    "@vue-quill-up/internal": "workspace:^",
+    "typescript": "^5.5.0",
+    "vite": "^5.0.10"
+  }
+}

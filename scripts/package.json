@@ -1,0 +1,9 @@
+{
+  "name": "@vue-quill-up/internal",
+  "type": "module",
+  "private": true,
+  "scripts": {},
+  "devDependencies": {
+    "consola": "^3.2.3"
+  }
+}
