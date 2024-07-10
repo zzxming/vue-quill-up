@@ -5,7 +5,7 @@ import 'quill/dist/quill.snow.css';
 import { ref, watch } from 'vue';
 import Quill, { Delta, Op, Parchment } from 'quill/core';
 import { isObject } from '@vue/shared';
-import QuillUp from 'vue-quill-up';
+import QuillUp, { QuillUpInstance } from 'vue-quill-up';
 
 const isNumber = val => typeof val === 'number';
 
@@ -159,7 +159,7 @@ const options = {
     },
   },
 };
-const editorRef = ref<InstanceType<typeof QuillUp>>();
+const editorRef = ref<QuillUpInstance>();
 const content = ref(
   new Delta([
     {

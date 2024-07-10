@@ -1,4 +1,4 @@
 import QuillUp from './src/components/quill-up.vue';
 
-export { QuillUp };
+export * from './src/quill-up';
 export default QuillUp;
