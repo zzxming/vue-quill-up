@@ -4,18 +4,22 @@
   "packageManager": "pnpm@8.14.3",
   "workspaces": [
     "packages/*",
-    "demos",
-    "scripts"
+    "demos"
   ],
   "scripts": {
+    "build": "pnpm -C ./internal/build run build",
+    "build:common": "pnpm -C ./internal/utils run build",
     "build:theme": "pnpm -C ./packages/theme run build",
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --fix",
-    "dev": "tsx ./scripts/dev.ts"
+    "dev": "pnpm -C ./demos run dev",
+    "publish": "tsx ./scripts/publish.ts"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
+    "@vue-quill-up/internal-utils": "workspace:^",
     "@zzxming/eslint-config": "^0.0.7",
+    "consola": "^3.2.3",
     "eslint": "^9.6.0",
     "tsx": "^4.16.2",
     "typescript": "^5.5.0"
