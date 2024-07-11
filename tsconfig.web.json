@@ -7,6 +7,6 @@
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true
   },
-  "include": ["packages/**/*", "demos", "index.d.ts"],
+  "include": ["packages/**/*", "index.d.ts"],
   "exclude": ["node_modules", "**/dist", "**/gulpfile.ts"]
 }

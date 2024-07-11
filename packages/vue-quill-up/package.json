@@ -1,20 +1,12 @@
 {
   "name": "vue-quill-up",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Quill2.x in Vue3.x",
   "author": "zzxming",
   "license": "MIT",
-  "keywords": [
-    "quill",
-    "vue3"
-  ],
+  "repository": { "type": "git", "url": "git+https://github.com/zzxming/vue-quill-up" },
+  "keywords": ["quill", "vue3"],
   "main": "index.js",
-  "scripts": {
-    "dev": "echo \"Error: no test specified\" && exit 1"
-  },
-  "peerDependencies": {
-    "quill": "^2.0.0",
-    "vue": "^3.0.0"
-  }
+  "peerDependencies": { "quill": "^2.0.0", "vue": "^3.0.0" }
 }
