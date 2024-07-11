@@ -31,6 +31,7 @@ class TextCounter {
       if (this.options.maxLength && this.getDeltaLength(curDelta) > this.options.maxLength) {
         let exceedCount = this.getDeltaLength(curDelta) - this.options.maxLength;
         let realInsertCount = 0;
+        let shouldInsertCount = 0;
         const newOps: Op[] = [];
         const diffOps = delta.ops;
         for (let i = diffOps.length - 1; i >= 0; i--) {
@@ -45,10 +46,12 @@ class TextCounter {
               });
               exceedCount -= len;
               realInsertCount += text.length;
+              shouldInsertCount += len;
               continue;
             }
             else {
               exceedCount -= 1;
+              shouldInsertCount += 1;
               continue;
             }
           }
@@ -56,10 +59,8 @@ class TextCounter {
         }
         const range = this.quill.getSelection() || { index: 0, length: 0 };
         this.quill.setContents(oldDelta.compose(new Delta(newOps)), Quill.sources.SILENT);
-        setTimeout(() => {
-          range.index += realInsertCount;
-          this.quill.setSelection(range, Quill.sources.SILENT);
-        }, 0);
+        const index = range.length + range.index + realInsertCount - shouldInsertCount;
+        this.quill.setSelection({ index, length: 0 }, Quill.sources.SILENT);
       }
     });
     this.quill.on(Quill.events.EDITOR_CHANGE, (name, delta, oldDelta, source) => {
