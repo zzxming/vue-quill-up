@@ -7,7 +7,7 @@ import Quill, { Delta, Op, Parchment } from 'quill/core';
 import { isObject } from '@vue/shared';
 import QuillUp, { QuillUpInstance } from 'vue-quill-up';
 
-const isNumber = val => typeof val === 'number';
+const isNumber = (val: any) => typeof val === 'number';
 
 type TextCounterOptions = {
   maxLength: number;
