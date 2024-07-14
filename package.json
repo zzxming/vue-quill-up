@@ -15,13 +15,26 @@
     "dev": "pnpm -C ./demos run dev",
     "publish": "tsx ./scripts/publish.ts"
   },
+  "peerDependencies": {
+    "quill": "^2.0.0",
+    "vue": "^3.0.0"
+  },
   "devDependencies": {
     "@types/node": "^20.14.10",
+    "@typescript-eslint/eslint-plugin": "^7.16.0",
+    "@typescript-eslint/parser": "^7.16.0",
     "@vue-quill-up/internal-utils": "workspace:^",
-    "@zzxming/eslint-config": "^0.0.7",
+    "@zzxming/eslint-config": "^0.0.9",
     "consola": "^3.2.3",
-    "eslint": "^9.6.0",
+    "eslint-merge-processors": "^0.1.0",
+    "eslint-plugin-jsonc": "^2.16.0",
+    "eslint-plugin-markdown": "^5.1.0",
+    "eslint-plugin-vue": "^9.27.0",
+    "eslint-plugin-yml": "^1.14.0",
+    "jsonc-eslint-parser": "^2.4.0",
     "tsx": "^4.16.2",
-    "typescript": "^5.5.0"
+    "typescript": "^5.5.0",
+    "vue-eslint-parser": "^9.4.3",
+    "yaml-eslint-parser": "^1.2.3"
   }
 }
