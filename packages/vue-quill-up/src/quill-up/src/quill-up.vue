@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, isRef, onMounted, ref, watch } from 'vue';
 import Quill from 'quill';
 import type { EmitterSource, QuillOptions, Range } from 'quill';
 import { Delta, Parchment } from 'quill/core';
@@ -55,6 +55,9 @@ const model = computed<string | Delta>({
   },
 });
 
+const isString = (val: any): val is string => typeof val === 'string';
+const isArray = Array.isArray;
+
 const registeDependencies = (name: string, module: any, overwrite: boolean = true) => {
   Quill.register(name, module, overwrite);
 };
@@ -64,8 +67,19 @@ const resolveQuillOptions = () => {
       registeDependencies(`${key}/${name}`, module, overwrite);
     }
   }
+  let toolbarOption: Record<string, any> = props.options?.modules?.toolbar || {};
+  if (toolbarOption instanceof HTMLElement || isString(toolbarOption) || isRef(toolbarOption) || isArray(toolbarOption)) {
+    toolbarOption = {
+      container: toolbarOption,
+    };
+  }
+  toolbarOption.container = isRef(toolbarOption.container) ? toolbarOption.container.value : toolbarOption.container;
   return {
     ...props.options,
+    modules: {
+      ...props.options?.modules,
+      toolbar: toolbarOption,
+    },
     readOnly: props.readonly,
   };
 };

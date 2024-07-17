@@ -81,7 +81,7 @@ class TextCounter {
 
   resolveOptions(options: Partial<TextCounterOptions>) {
     return {
-      maxLength: isNumber(options.maxLength) ? options.maxLength : defaultMaxLenght,
+      maxLength: isNumber(options.maxLength) ? Number(options.maxLength) : defaultMaxLenght,
       exceed: options.exceed,
     };
   }
@@ -146,20 +146,7 @@ DividerFormat.tagName = 'p';
 DividerFormat.className = 'ql-divider';
 DividerFormat.blotName = 'divider';
 
-const options = {
-  theme: 'snow',
-  modules: {
-    toolbar: {
-      container: '#tool',
-    },
-    TextCounter: {
-      maxLength: 10,
-      exceed: () => {
-        console.log('out of range');
-      },
-    },
-  },
-};
+const toolbarRef = ref<HTMLElement>();
 const editorRef = ref<QuillUpInstance>();
 const content = ref(
   new Delta([
@@ -294,6 +281,21 @@ const toolbarList = [
   ],
 ];
 
+const options = {
+  theme: 'snow',
+  modules: {
+    toolbar: {
+      container: toolbarRef,
+    },
+    TextCounter: {
+      maxLength: 10,
+      exceed: () => {
+        console.log('out of range');
+      },
+    },
+  },
+};
+
 watch(content, () => {
   console.log('watch', content.value);
 }, { deep: true });
@@ -332,7 +334,8 @@ const getContent = () => {
       break
     </button>
 
-    <div id="tool">
+    <div id="tool" />
+    <div ref="toolbarRef">
       <template v-for="(tools, i) in toolbarList" :key="i">
         <span class="ql-formats">
           <template v-for="tool in tools" :key="tool.name">
@@ -364,6 +367,12 @@ const getContent = () => {
       :content-type="contentType"
       :readonly="readonly"
       :register="register"
+      @focus="() => { console.log('focus') }"
+      @blur="() => { console.log('blur') }"
+      @text-change="() => { console.log('text-change') }"
+      @selection-change="() => { console.log('selection-change') }"
+      @editor-change="() => { console.log('editor-change') }"
+      @ready-change="() => { console.log('ready-change') }"
     />
   </main>
 </template>
