@@ -1,12 +1,13 @@
 {
   "name": "vue-quill-up",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2-beta.1",
   "description": "Quill2.x in Vue3.x",
   "author": "zzxming",
   "license": "MIT",
   "repository": { "type": "git", "url": "git+https://github.com/zzxming/vue-quill-up" },
   "keywords": ["quill", "vue3"],
   "main": "index.js",
+  "types": "index.d.ts",
   "peerDependencies": { "quill": "^2.0.0", "vue": "^3.0.0" }
 }
