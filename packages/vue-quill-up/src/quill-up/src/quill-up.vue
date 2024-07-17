@@ -43,7 +43,6 @@ let quill: Quill;
 
 const container = ref<HTMLDivElement>();
 const __modelValue = ref<string | Delta>(new Delta());
-
 const model = computed<string | Delta>({
   get() {
     return props.modelValue || __modelValue.value;
@@ -132,13 +131,13 @@ const bindEvents = () => {
 const initialize = () => {
   if (container.value) {
     quill = new Quill(container.value, resolveQuillOptions());
+    emits(READY_EVENT);
     if (!props.modelValue) {
       model.value = props.contentType === 'delta' ? new Delta() : '';
       emits(UPDATE_MODEL_EVENT, model.value);
     }
     setModelValueToQuill();
     bindEvents();
-    emits(READY_EVENT);
   }
 };
 
