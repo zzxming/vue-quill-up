@@ -1,7 +1,12 @@
-import { ESLint } from 'eslint';
+import { loadESLint } from 'eslint';
+import { projRoot } from '@vue-quill-up/internal-utils';
 
 export const lintFiles = async (filePaths: string | string[]) => {
-  const eslint = new ESLint({ fix: true });
-  const results = await eslint.lintFiles(Array.isArray(filePaths) ? (filePaths) : [filePaths]);
+  const ESLint = await loadESLint();
+  const eslint = new ESLint({
+    fix: true,
+    cwd: projRoot,
+  });
+  const results = await eslint.lintFiles(Array.isArray(filePaths) ? filePaths : [filePaths]);
   await ESLint.outputFixes(results);
 };

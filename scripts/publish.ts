@@ -18,7 +18,7 @@ const copyFile = (src: string, dest: string) => new Promise<void>((resolve, reje
 const main = async () => {
   consola.info(`Update version to: ${version}`);
 
-  // await run('pnpm run build', buildRoot);
+  await run('pnpm run build');
 
   const compPkg = resolve(compRoot, 'package.json');
   const outputPkg = resolve(outputRoot, 'package.json');
