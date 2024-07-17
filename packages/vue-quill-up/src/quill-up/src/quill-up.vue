@@ -32,12 +32,14 @@ const props = withDefaults(
     readonly: false,
   },
 );
-const emits = defineEmits<{
-  (e: typeof READY_EVENT): void;
-  (e: typeof UPDATE_MODEL_EVENT, val: string | Delta): void;
-  (e: typeof TEXT_CHANGE_EVENT, delta: Delta, oldDelta: Delta, source: EmitterSource): void;
-  (e: typeof SELECTION_CHANGE_EVENT, range: Range, oldRange: Range, source: EmitterSource): void;
-  (e: typeof EDITOR_CHANGE_EVENT, name: typeof TEXT_CHANGE_EVENT | typeof SELECTION_CHANGE_EVENT, value: Delta | Range, oldValue: Delta | Range, source: EmitterSource): void;
+const emit = defineEmits<{
+  (e: 'ready'): void;
+  (e: 'update:modelValue', val: string | Delta): void;
+  (e: 'text-change', delta: Delta, oldDelta: Delta, source: EmitterSource): void;
+  (e: 'selection-change', range: Range, oldRange: Range, source: EmitterSource): void;
+  (e: 'editor-change', name: typeof TEXT_CHANGE_EVENT | typeof SELECTION_CHANGE_EVENT, value: Delta | Range, oldValue: Delta | Range, source: EmitterSource): void;
+  (e: 'focus', evnet: FocusEvent): void;
+  (e: 'blur', evnet: FocusEvent): void;
 }>();
 let quill: Quill;
 
@@ -49,7 +51,7 @@ const model = computed<string | Delta>({
   },
   set(value: any) {
     __modelValue.value = value;
-    emits(UPDATE_MODEL_EVENT, value);
+    emit(UPDATE_MODEL_EVENT, value);
   },
 });
 
@@ -112,29 +114,35 @@ const setModelValueToQuill = () => {
   quill.setSelection(range);
 };
 const updateContent = () => {
-  emits(UPDATE_MODEL_EVENT, getContentByType(props.contentType));
+  emit(UPDATE_MODEL_EVENT, getContentByType(props.contentType));
 };
 const bindEvents = () => {
   quill.on(TEXT_CHANGE_EVENT, (delta, oldDelta, source) => {
-    emits(TEXT_CHANGE_EVENT, delta, oldDelta, source);
+    emit(TEXT_CHANGE_EVENT, delta, oldDelta, source);
   });
   quill.on(SELECTION_CHANGE_EVENT, (range, oldRange, source) => {
-    emits(SELECTION_CHANGE_EVENT, range, oldRange, source);
+    emit(SELECTION_CHANGE_EVENT, range, oldRange, source);
   });
   quill.on(EDITOR_CHANGE_EVENT, (type, value, oldValue, source) => {
     if (type === TEXT_CHANGE_EVENT) {
       updateContent();
     }
-    emits(EDITOR_CHANGE_EVENT, type, value, oldValue, source);
+    emit(EDITOR_CHANGE_EVENT, type, value, oldValue, source);
+  });
+  quill.root.addEventListener('focus', (e) => {
+    emit('focus', e);
+  });
+  quill.root.addEventListener('blur', (e) => {
+    emit('blur', e);
   });
 };
 const initialize = () => {
   if (container.value) {
     quill = new Quill(container.value, resolveQuillOptions());
-    emits(READY_EVENT);
+    emit(READY_EVENT);
     if (!props.modelValue) {
       model.value = props.contentType === 'delta' ? new Delta() : '';
-      emits(UPDATE_MODEL_EVENT, model.value);
+      emit(UPDATE_MODEL_EVENT, model.value);
     }
     setModelValueToQuill();
     bindEvents();
