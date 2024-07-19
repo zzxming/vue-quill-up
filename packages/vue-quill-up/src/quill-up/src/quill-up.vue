@@ -5,7 +5,6 @@ import type { EmitterSource, QuillOptions, Range } from 'quill';
 import { hasOwn, isFunction } from '@vue/shared';
 import { Delta, Parchment } from 'quill/core';
 import { EDITOR_CHANGE_EVENT, READY_EVENT, SELECTION_CHANGE_EVENT, TEXT_CHANGE_EVENT, UPDATE_MODEL_EVENT } from './constants';
-import 'quill/dist/quill.snow.css';
 
 type QuillContentType = 'html' | 'text' | 'delta';
 
