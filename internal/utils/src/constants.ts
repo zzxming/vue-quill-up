@@ -9,3 +9,5 @@ export const themeRoot = resolve(pkgRoot, 'theme');
 export const buildRoot = resolve(pkgRoot, 'internal/build');
 export const utilsRoot = resolve(pkgRoot, 'internal/utils');
 export const compRoot = resolve(pkgRoot, 'vue-quill-up');
+
+export const compPkg = resolve(compRoot, 'package.json');

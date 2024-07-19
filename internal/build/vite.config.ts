@@ -3,9 +3,8 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import dts from 'vite-plugin-dts';
 import esbuild from 'rollup-plugin-esbuild';
-import { compRoot, outputRoot } from '@vue-quill-up/internal-utils';
+import { compPkg, compRoot, getPackageManifest, outputRoot } from '@vue-quill-up/internal-utils';
 
-console.log(resolve(compRoot, 'index.ts'));
 export default defineConfig({
   plugins: [
     vue(),
@@ -29,10 +28,10 @@ export default defineConfig({
       input: resolve(compRoot, 'index.ts'),
       preserveEntrySignatures: 'allow-extension',
       external: (id: string) => {
-        const packages = ['@vue', 'vue', 'quill'];
-        return Array.from(new Set(packages)).some(pkg => id === pkg || id.startsWith(`${pkg}/`));
+        const pkg = getPackageManifest(compPkg);
+        return Object.keys(pkg.peerDependencies || {}).some(pkg => id === pkg || id.startsWith(`${pkg}/`));
       },
-      treeshake: false,
+      treeshake: true,
       output: [
         {
           format: 'es',
