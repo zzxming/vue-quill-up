@@ -59,17 +59,19 @@ const contentType = 'html';
 const options = {
   theme: 'snow',
 };
+// same Quill.register({ 'attributors/class/margin-top': MarginTopClass, 'attributors/style/margin-top': MarginTopStyle })
 const register = {
-  attributors: [
-    {
-      name: 'class/margin-top',
-      module: MarginTopClass,
+  attributors: {
+    class: {
+      'margin-top': {
+        module: MarginTopClass,
+        overwrite: true,
+      },
     },
-    {
-      name: 'style/margin-top',
-      module: MarginTopStyle,
-    },
-  ],
+    style: {
+      'margin-top': MarginTopStyle,
+    }
+  },
 };
 </script>
 
@@ -140,7 +142,7 @@ const options = {
 | contentType | `'delta' \| 'string' \| 'html'` | `modelValue` type                              | `'delta'` | `false` |
 | options     | `QuillOptions`                  | Quill options                                  | `{}`      | `false` |
 | readonly    | `boolean`                       | Editor is readonly. Same with options.readonly | `false`   | `false` |
-| register    | `QuillRegister`                 | Modules that require automatic registration    | -         | `false` |
+| register    | `Record<string, any>`           | Modules that require automatic registration    | -         | `false` |
 
 ## Events
 
@@ -152,19 +154,3 @@ const options = {
 | text-change      | Same with `quill.on('text-change')`      | Same with `quill.on('text-change')`      |
 | selection-change | Same with `quill.on('selection-change')` | Same with `quill.on('selection-change')` |
 | editor-change    | Same with `quill.on('editor-change')`    | Same with `quill.on('editor-change')`    |
-
-### Types
-
-```ts
-type AnyClass = new (...args: any[]) => any;
-interface QuillModule {
-  name: string;
-  module: AnyClass | Parchment.Attributor;
-  overwrite?: boolean;
-}
-interface QuillRegister {
-  modules?: QuillModule[];
-  formats?: QuillModule[];
-  attributors?: QuillModule[];
-}
-```

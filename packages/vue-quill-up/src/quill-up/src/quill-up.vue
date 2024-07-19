@@ -2,29 +2,20 @@
 import { computed, isRef, onMounted, ref, watch } from 'vue';
 import Quill from 'quill';
 import type { EmitterSource, QuillOptions, Range } from 'quill';
+import { hasOwn, isFunction } from '@vue/shared';
 import { Delta, Parchment } from 'quill/core';
 import { EDITOR_CHANGE_EVENT, READY_EVENT, SELECTION_CHANGE_EVENT, TEXT_CHANGE_EVENT, UPDATE_MODEL_EVENT } from './constants';
 import 'quill/dist/quill.snow.css';
 
 type QuillContentType = 'html' | 'text' | 'delta';
-type AnyClass = new (...args: any[]) => any;
-type QuillModule = {
-  name: string;
-  module: AnyClass | Parchment.Attributor;
-  overwrite?: boolean;
-};
-type QuillRegister = {
-  modules?: QuillModule[];
-  formats?: QuillModule[];
-  attributors?: QuillModule[];
-};
+
 const props = withDefaults(
   defineProps<{
     modelValue: string | Delta;
     options?: QuillOptions;
     contentType?: QuillContentType;
     readonly?: boolean;
-    register?: QuillRegister;
+    register?: Record<string, any>;
   }>(),
   {
     contentType: 'delta',
@@ -41,8 +32,8 @@ const emit = defineEmits<{
   (e: 'focus', evnet: FocusEvent): void;
   (e: 'blur', evnet: FocusEvent): void;
 }>();
-let quill: Quill;
 
+let quill: Quill;
 const container = ref<HTMLDivElement>();
 const __modelValue = ref<string | Delta>(new Delta());
 const model = computed<string | Delta>({
@@ -57,16 +48,33 @@ const model = computed<string | Delta>({
 
 const isString = (val: any): val is string => typeof val === 'string';
 const isArray = Array.isArray;
+const isObject = (val: any) => val !== null && typeof val === 'object';
 
 const registeDependencies = (name: string, module: any, overwrite: boolean = true) => {
   Quill.register(name, module, overwrite);
 };
-const resolveQuillOptions = () => {
-  for (const [key, value] of Object.entries(props.register || [])) {
-    for (const { name, module, overwrite = true } of value) {
-      registeDependencies(`${key}/${name}`, module, overwrite);
+const resolveRegister = (register: Record<string, any>, path: string = '') => {
+  if (isObject(register)) {
+    for (const [key, value] of Object.entries(register)) {
+      if (isFunction(value)) {
+        registeDependencies(`${path}${key}`, value);
+      }
+      else if (isObject(value)) {
+        if (value instanceof Parchment.Attributor) {
+          registeDependencies(`${path}${key}`, value);
+        }
+        else if (hasOwn(value, 'module') && hasOwn(value, 'overwrite')) {
+          registeDependencies(`${path}${key}`, value.module, value.overwrite);
+        }
+        else {
+          resolveRegister(value, `${key}/`);
+        }
+      }
     }
   }
+};
+const resolveQuillOptions = () => {
+  resolveRegister(props.register || {});
   let toolbarOption: Record<string, any> = props.options?.modules?.toolbar || {};
   if (toolbarOption instanceof HTMLElement || isString(toolbarOption) || isRef(toolbarOption) || isArray(toolbarOption)) {
     toolbarOption = {

@@ -3,148 +3,11 @@
 import 'vue-quill-up/theme/src/index.less';
 import 'quill/dist/quill.snow.css';
 import { ref, watch } from 'vue';
-import Quill, { Delta, Op, Parchment } from 'quill/core';
-import { isObject } from '@vue/shared';
+import Quill, { Delta } from 'quill/core';
 import QuillUp, { QuillUpInstance } from 'vue-quill-up';
-
-const isNumber = (val: any) => typeof val === 'number';
-
-type TextCounterOptions = {
-  maxLength: number;
-  exceed: () => any;
-};
-const defaultMaxLenght = 10_000;
-class TextCounter {
-  quill: Quill;
-  container: HTMLElement;
-  options: { maxLength: number; exceed: any };
-  constructor(quill: Quill, options: Partial<TextCounterOptions> = {}) {
-    this.quill = quill;
-    this.options = this.resolveOptions(options);
-
-    const span = document.createElement('span');
-    span.classList.add('ql-text-counter');
-    this.container = quill.addContainer(span);
-
-    this.quill.on(Quill.events.TEXT_CHANGE, (delta, oldDelta, source) => {
-      const curDelta = oldDelta.compose(new Delta(delta));
-      if (this.options.maxLength && this.getDeltaLength(curDelta) > this.options.maxLength) {
-        let exceedCount = this.getDeltaLength(curDelta) - this.options.maxLength;
-        let realInsertCount = 0;
-        let shouldInsertCount = 0;
-        const newOps: Op[] = [];
-        const diffOps = delta.ops;
-        for (let i = diffOps.length - 1; i >= 0; i--) {
-          const item = diffOps[i];
-          if (item.insert && exceedCount > 0) {
-            if (typeof item.insert === 'string') {
-              const len = item.insert.length;
-              const text = item.insert.slice(0, Math.max(0, len - exceedCount));
-              newOps.unshift({
-                ...item,
-                insert: text,
-              });
-              exceedCount -= len;
-              realInsertCount += text.length;
-              shouldInsertCount += len;
-              continue;
-            }
-            else {
-              exceedCount -= 1;
-              shouldInsertCount += 1;
-              continue;
-            }
-          }
-          newOps.unshift(item);
-        }
-        const range = this.quill.getSelection() || { index: 0, length: 0 };
-        this.quill.setContents(oldDelta.compose(new Delta(newOps)), Quill.sources.SILENT);
-        const index = range.length + range.index + realInsertCount - shouldInsertCount;
-        this.quill.setSelection({ index, length: 0 }, Quill.sources.SILENT);
-      }
-    });
-    this.quill.on(Quill.events.EDITOR_CHANGE, (name, delta, oldDelta, source) => {
-      if (name === Quill.events.TEXT_CHANGE) {
-        this.updateDisplay(this.getDeltaLength(this.quill.getContents()));
-      }
-    });
-  }
-
-  getDeltaLength(delta: Delta) {
-    return delta.ops.reduce((length, elem) => {
-      if (elem.delete) {
-        return length;
-      }
-      return length + Op.length(elem);
-    }, 0);
-  }
-
-  resolveOptions(options: Partial<TextCounterOptions>) {
-    return {
-      maxLength: isNumber(options.maxLength) ? Number(options.maxLength) : defaultMaxLenght,
-      exceed: options.exceed,
-    };
-  }
-
-  updateDisplay(value: number) {
-    let text = `${value}`;
-    if (this.options.maxLength !== 0) {
-      text += `/${this.options.maxLength}`;
-    }
-    this.container.textContent = text;
-  }
-}
-const config = {
-  scope: Parchment.Scope.BLOCK,
-};
-const MarginTopClass = new Parchment.ClassAttributor('margin-top', 'ql-margin-top', config);
-const MarginTopStyle = new Parchment.StyleAttributor('margin-top', 'margin-top', config);
-
-const MarginBottomClass = new Parchment.ClassAttributor('margin-bottom', 'ql-margin-bottom', config);
-const MarginBottomStyle = new Parchment.StyleAttributor('margin-bottom', 'margin-bottom', config);
-
-class DividerFormat extends Parchment.EmbedBlot {
-  static create(value) {
-    let type;
-    let tip = '';
-    if (isObject(value)) {
-      ({ type, tip } = value);
-    }
-    else {
-      type = value;
-    }
-    const node = super.create() as Element;
-    node.setAttribute('contenteditable', 'false');
-    node.setAttribute('data-type', type);
-    node.setAttribute('data-tip', tip || '');
-    return node;
-  }
-
-  get tip() {
-    return (this.domNode as Element).getAttribute('data-tip') || '';
-  }
-
-  set tip(value) {
-    (this.domNode as Element).setAttribute('data-tip', value);
-    this.domNode.textContent = value;
-  }
-
-  formats() {
-    return { [this.statics.blotName]: this.statics.formats(this.domNode) };
-  }
-
-  formatAt(index, length, name, value) {
-    this.format(name, value);
-  }
-
-  static value(domNode) {
-    const { type, tip } = domNode.dataset;
-    return { type, tip };
-  }
-}
-DividerFormat.tagName = 'p';
-DividerFormat.className = 'ql-divider';
-DividerFormat.blotName = 'divider';
+import { TextCounter } from './modules/text-counter';
+import { DividerFormat } from './formats/divider';
+import { MarginBottomStyle, MarginTopStyle } from './formats/margin';
 
 const toolbarRef = ref<HTMLElement>();
 const editorRef = ref<QuillUpInstance>();
@@ -187,48 +50,24 @@ const content = ref(
 );
 const contentType = ref('delta' as const);
 const readonly = ref(false);
-const modules = [
-  {
-    name: 'TextCounter',
-    module: TextCounter,
-  },
-];
-const formats = [
-  {
-    name: 'divider',
-    module: DividerFormat,
-  },
-  {
-    name: 'margin-top',
-    module: MarginTopStyle,
-  },
-  {
-    name: 'margin-bottom',
-    module: MarginBottomStyle,
-  },
-];
-const attributors = [
-  {
-    name: 'class/margin-top',
-    module: MarginTopClass,
-  },
-  {
-    name: 'style/margin-top',
-    module: MarginTopStyle,
-  },
-  {
-    name: 'class/margin-bottom',
-    module: MarginBottomClass,
-  },
-  {
-    name: 'style/margin-bottom',
-    module: MarginBottomStyle,
-  },
-];
 const register = {
-  modules,
-  formats,
-  attributors,
+  modules: {
+    TextCounter,
+  },
+  formats: {
+    'divider': {
+      module: DividerFormat,
+      overwrite: true,
+    },
+    'margin-top': MarginTopStyle,
+    'margin-bottom': MarginBottomStyle,
+  },
+  attributors: {
+    style: {
+      'margin-top': MarginTopStyle,
+      'margin-bottom': MarginBottomStyle,
+    },
+  },
 };
 
 const toolbarList = [
@@ -378,22 +217,21 @@ const getContent = () => {
 </template>
 
 <style>
-.ql-divider {
-  width: 90%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 1rem;
-  margin: auto;
-  overflow: hidden;
-  cursor: default;
-  line-height:1;
-  text-wrap: nowrap;
-
+.ql-editor .ql-divider {
+    width: 90%;
+    position: relative;
+    margin: auto;
+    display: flex;
+    height: 1rem;
+    cursor: default;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-wrap: nowrap;
+    line-height: 1;
 }
-.ql-divider::after,
-.ql-divider::before {
+.ql-editor .ql-divider::after,
+.ql-editor .ql-divider::before {
   content: '';
   display: block;
   flex-grow: 1;
