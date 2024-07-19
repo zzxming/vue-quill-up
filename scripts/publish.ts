@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import { resolve } from 'node:path';
 import consola from 'consola';
-import { compRoot, outputRoot, projRoot, run } from '@vue-quill-up/internal-utils';
+import { compPkg, getPackageManifest, outputRoot, projRoot, run } from '@vue-quill-up/internal-utils';
 import { version } from './version';
 import { lintFiles } from './lint';
 
@@ -20,9 +20,8 @@ const main = async () => {
 
   await run('pnpm run build');
 
-  const compPkg = resolve(compRoot, 'package.json');
   const outputPkg = resolve(outputRoot, 'package.json');
-  const projectPkg = JSON.parse(fs.readFileSync(compPkg, 'utf8'));
+  const projectPkg = getPackageManifest(compPkg);
   projectPkg.version = version;
 
   const pkgData = JSON.stringify(projectPkg);
