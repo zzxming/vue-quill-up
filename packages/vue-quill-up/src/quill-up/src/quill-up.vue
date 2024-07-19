@@ -75,6 +75,7 @@ const resolveRegister = (register: Record<string, any>, path: string = '') => {
 };
 const resolveQuillOptions = () => {
   resolveRegister(props.register || {});
+  const hasToolbar = !!props.options?.modules?.toolbar;
   let toolbarOption: Record<string, any> = props.options?.modules?.toolbar || {};
   if (toolbarOption instanceof HTMLElement || isString(toolbarOption) || isRef(toolbarOption) || isArray(toolbarOption)) {
     toolbarOption = {
@@ -82,11 +83,12 @@ const resolveQuillOptions = () => {
     };
   }
   toolbarOption.container = isRef(toolbarOption.container) ? toolbarOption.container.value : toolbarOption.container;
+
   return {
     ...props.options,
     modules: {
       ...props.options?.modules,
-      toolbar: toolbarOption,
+      toolbar: hasToolbar ? toolbarOption : undefined,
     },
     readOnly: props.readonly,
   };

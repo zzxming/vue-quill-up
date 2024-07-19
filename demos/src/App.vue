@@ -1,6 +1,7 @@
 <!-- eslint-disable unused-imports/no-unused-vars -->
 <script setup lang="ts">
 import 'vue-quill-up/theme/src/index.less';
+import 'quill/dist/quill.bubble.css';
 import 'quill/dist/quill.snow.css';
 import { ref, watch } from 'vue';
 import Quill, { Delta } from 'quill/core';
