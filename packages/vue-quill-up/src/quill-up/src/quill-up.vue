@@ -87,7 +87,7 @@ const resolveQuillOptions = () => {
     ...props.options,
     modules: {
       ...props.options?.modules,
-      toolbar: hasToolbar ? toolbarOption : undefined,
+      toolbar: hasToolbar ? toolbarOption : hasToolbar,
     },
     readOnly: props.readonly,
   };

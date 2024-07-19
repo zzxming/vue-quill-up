@@ -14,38 +14,38 @@ const toolbarRef = ref<HTMLElement>();
 const editorRef = ref<QuillUpInstance>();
 const content = ref(
   new Delta([
-    {
-      insert: 'qwfqw',
-    },
-    {
-      attributes: {
-        'text-indent': '0em',
-        'margin-top': '2em',
-        'margin-bottom': '2em',
-        'line-height': '1em',
-      },
-      insert: '\n',
-    },
-    {
-      insert: '\n',
-    },
-    {
-      insert: {
-        divider: {
-          type: 'line',
-          tip: '',
-        },
-      },
-    },
-    {
-      attributes: {
-        color: 'rgb(171, 200, 195)',
-      },
-      insert: 'wfqwf',
-    },
-    {
-      insert: '\n',
-    },
+    // {
+    //   insert: 'qwfqw',
+    // },
+    // {
+    //   attributes: {
+    //     'text-indent': '0em',
+    //     'margin-top': '2em',
+    //     'margin-bottom': '2em',
+    //     'line-height': '1em',
+    //   },
+    //   insert: '\n',
+    // },
+    // {
+    //   insert: '\n',
+    // },
+    // {
+    //   insert: {
+    //     divider: {
+    //       type: 'line',
+    //       tip: '',
+    //     },
+    //   },
+    // },
+    // {
+    //   attributes: {
+    //     color: 'rgb(171, 200, 195)',
+    //   },
+    //   insert: 'wfqwf',
+    // },
+    // {
+    //   insert: '\n',
+    // },
   ]),
   // '<p>Hello</p><ul><li>item 1</li><li>item 2</li></ul><h2>Header</h2>',
 );
@@ -124,9 +124,10 @@ const toolbarList = [
 const options = {
   theme: 'snow',
   modules: {
-    toolbar: {
-      container: toolbarRef,
-    },
+    toolbar: false,
+    // toolbar: {
+    //   container: toolbarRef,
+    // },
     TextCounter: {
       maxLength: 10,
       exceed: () => {
