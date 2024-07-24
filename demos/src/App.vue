@@ -14,43 +14,42 @@ const toolbarRef = ref<HTMLElement>();
 const editorRef = ref<QuillUpInstance>();
 const content = ref(
   new Delta([
-    // {
-    //   insert: 'qwfqw',
-    // },
-    // {
-    //   attributes: {
-    //     'text-indent': '0em',
-    //     'margin-top': '2em',
-    //     'margin-bottom': '2em',
-    //     'line-height': '1em',
-    //   },
-    //   insert: '\n',
-    // },
-    // {
-    //   insert: '\n',
-    // },
-    // {
-    //   insert: {
-    //     divider: {
-    //       type: 'line',
-    //       tip: '',
-    //     },
-    //   },
-    // },
-    // {
-    //   attributes: {
-    //     color: 'rgb(171, 200, 195)',
-    //   },
-    //   insert: 'wfqwf',
-    // },
-    // {
-    //   insert: '\n',
-    // },
+    {
+      insert: 'qwfqw',
+    },
+    {
+      attributes: {
+        'text-indent': '0em',
+        'margin-top': '2em',
+        'margin-bottom': '2em',
+        'line-height': '1em',
+      },
+      insert: '\n',
+    },
+    {
+      insert: '\n',
+    },
+    {
+      insert: {
+        divider: {
+          type: 'line',
+          tip: '',
+        },
+      },
+    },
+    {
+      attributes: {
+        color: 'rgb(171, 200, 195)',
+      },
+      insert: 'wfqwf',
+    },
+    {
+      insert: '\n',
+    },
   ]),
-  // '<p>Hello</p><ul><li>item 1</li><li>item 2</li></ul><h2>Header</h2>',
 );
 const contentType = ref('delta' as const);
-const readonly = ref(false);
+const readOnly = ref(false);
 const register = {
   modules: {
     TextCounter,
@@ -124,16 +123,16 @@ const toolbarList = [
 const options = {
   theme: 'snow',
   modules: {
-    toolbar: false,
-    // toolbar: {
-    //   container: toolbarRef,
-    // },
-    TextCounter: {
-      maxLength: 10,
-      exceed: () => {
-        console.log('out of range');
-      },
+    // toolbar: false,
+    toolbar: {
+      container: toolbarRef,
     },
+    // TextCounter: {
+    //   maxLength: 10,
+    //   exceed: () => {
+    //     console.log('out of range');
+    //   },
+    // },
   },
 };
 
@@ -171,11 +170,10 @@ const getContent = () => {
     <button @click="getContent">
       getcontetn
     </button>
-    <button @click="readonly = !readonly">
+    <button @click="readOnly = !readOnly">
       break
     </button>
 
-    <div id="tool" />
     <div ref="toolbarRef">
       <template v-for="(tools, i) in toolbarList" :key="i">
         <span class="ql-formats">
@@ -206,7 +204,7 @@ const getContent = () => {
       v-model="content"
       :options="options"
       :content-type="contentType"
-      :readonly="readonly"
+      :read-only="readOnly"
       :register="register"
       @focus="() => { console.log('focus') }"
       @blur="() => { console.log('blur') }"
@@ -214,7 +212,9 @@ const getContent = () => {
       @selection-change="() => { console.log('selection-change') }"
       @editor-change="() => { console.log('editor-change') }"
       @ready-change="() => { console.log('ready-change') }"
-    />
+    >
+      <p>Hello</p><ul><li>item 1</li><li>item 2</li></ul><h2>Header</h2>
+    </QuillUp>
   </main>
 </template>
 
