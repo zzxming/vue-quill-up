@@ -33,7 +33,7 @@ const emit = defineEmits<{
 }>();
 
 let quill: Quill;
-const container = ref<HTMLDivElement>();
+const containerRef = ref<HTMLDivElement>();
 const __modelValue = ref<string | Delta>(new Delta());
 const model = computed<string | Delta>({
   get() {
@@ -160,14 +160,14 @@ const bindEvents = () => {
   });
 };
 const initialize = () => {
-  if (container.value) {
-    quill = new Quill(container.value, resolveQuillOptions());
+  if (containerRef.value) {
+    quill = new Quill(containerRef.value, resolveQuillOptions());
+    model.value = quill.getContents();
     emit(READY_EVENT);
     if (!props.modelValue) {
       model.value = props.contentType === 'delta' ? new Delta() : '';
       emit(UPDATE_MODEL_EVENT, model.value);
     }
-    setModelValueToQuill();
     bindEvents();
   }
 };
@@ -193,5 +193,7 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="container" />
+  <div ref="containerRef">
+    <slot />
+  </div>
 </template>
