@@ -13,13 +13,13 @@ const props = withDefaults(
     modelValue: string | Delta;
     options?: QuillOptions;
     contentType?: QuillContentType;
-    readonly?: boolean;
+    readOnly?: boolean;
     register?: Record<string, any>;
   }>(),
   {
     contentType: 'delta',
     optison: () => ({}),
-    readonly: false,
+    readOnly: false,
   },
 );
 const emit = defineEmits<{
@@ -89,7 +89,7 @@ const resolveQuillOptions = () => {
       ...props.options?.modules,
       toolbar: hasToolbar ? toolbarOption : hasToolbar,
     },
-    readOnly: props.readonly,
+    readOnly: props.options?.readOnly || props.readOnly,
   };
 };
 const getQuill = () => {
@@ -183,8 +183,8 @@ watch(
   },
   { immediate: true },
 );
-watch(() => props.readonly, () => {
-  quill.enable(!props.readonly);
+watch(() => props.readOnly, () => {
+  quill.enable(!props.readOnly);
 });
 
 defineExpose({
