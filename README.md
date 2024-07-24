@@ -30,7 +30,7 @@ const options = {
     ref="editorRef"
     v-model="content"
     :options="options"
-    :readonly="false"
+    :read-only="false"
     :content-type="contentType"
   />
 </template>
@@ -141,7 +141,7 @@ const options = {
 | modelValue  | `string \| Delt'`               | Quill content                                  | -         | `true`  |
 | contentType | `'delta' \| 'string' \| 'html'` | `modelValue` type                              | `'delta'` | `false` |
 | options     | `QuillOptions`                  | Quill options                                  | `{}`      | `false` |
-| readonly    | `boolean`                       | Editor is readonly. Same with options.readonly | `false`   | `false` |
+| readOnly    | `boolean`                       | Editor is readonly. Same with options.readOnly | `false`   | `false` |
 | register    | `Record<string, any>`           | Modules that require automatic registration    | -         | `false` |
 
 ## Events
