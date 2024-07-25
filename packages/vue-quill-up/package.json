@@ -1,7 +1,7 @@
 {
   "name": "vue-quill-up",
   "type": "module",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Quill2.x in Vue3.x",
   "author": "zzxming",
   "license": "MIT",
