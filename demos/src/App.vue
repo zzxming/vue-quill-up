@@ -1,3 +1,4 @@
+<!-- eslint-disable unused-imports/no-unused-imports -->
 <!-- eslint-disable unused-imports/no-unused-vars -->
 <script setup lang="ts">
 import 'vue-quill-up/theme/src/index.less';
@@ -14,38 +15,38 @@ const toolbarRef = ref<HTMLElement>();
 const editorRef = ref<QuillUpInstance>();
 const content = ref(
   new Delta([
-    {
-      insert: 'qwfqw',
-    },
-    {
-      attributes: {
-        'text-indent': '0em',
-        'margin-top': '2em',
-        'margin-bottom': '2em',
-        'line-height': '1em',
-      },
-      insert: '\n',
-    },
-    {
-      insert: '\n',
-    },
-    {
-      insert: {
-        divider: {
-          type: 'line',
-          tip: '',
-        },
-      },
-    },
-    {
-      attributes: {
-        color: 'rgb(171, 200, 195)',
-      },
-      insert: 'wfqwf',
-    },
-    {
-      insert: '\n',
-    },
+  //   {
+  //     insert: 'qwfqw',
+  //   },
+  //   {
+  //     attributes: {
+  //       'text-indent': '0em',
+  //       'margin-top': '2em',
+  //       'margin-bottom': '2em',
+  //       'line-height': '1em',
+  //     },
+  //     insert: '\n',
+  //   },
+  //   {
+  //     insert: '\n',
+  //   },
+  //   {
+  //     insert: {
+  //       divider: {
+  //         type: 'line',
+  //         tip: '',
+  //       },
+  //     },
+  //   },
+  //   {
+  //     attributes: {
+  //       color: 'rgb(171, 200, 195)',
+  //     },
+  //     insert: 'wfqwf',
+  //   },
+  //   {
+  //     insert: '\n',
+  //   },
   ]),
 );
 const contentType = ref('delta' as const);
@@ -136,8 +137,8 @@ const options = {
   },
 };
 
-watch(content, () => {
-  console.log('watch', content.value);
+watch(content, (val, oldVal) => {
+  console.log('watch', val);
 }, { deep: true });
 
 const getQuill = () => {
@@ -146,12 +147,19 @@ const getQuill = () => {
 };
 const test = () => {
   const quill = getQuill();
-  console.log(quill);
   if (quill) {
-    quill.formatLine(0, 5, {
-      'margin-top': '2em',
-      'margin-bottom': '2em',
-    }, Quill.sources.USER);
+    const range = quill.getSelection();
+    if (range) {
+      quill.formatLine(
+        range.index,
+        range.length,
+        {
+          'margin-top': '2em',
+          'margin-bottom': '2em',
+        },
+        Quill.sources.USER,
+      );
+    }
   }
 };
 const getContent = () => {
@@ -212,9 +220,7 @@ const getContent = () => {
       @selection-change="() => { console.log('selection-change') }"
       @editor-change="() => { console.log('editor-change') }"
       @ready-change="() => { console.log('ready-change') }"
-    >
-      <p>Hello</p><ul><li>item 1</li><li>item 2</li></ul><h2>Header</h2>
-    </QuillUp>
+    />
   </main>
 </template>
 

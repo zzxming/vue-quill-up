@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, isRef, onMounted, ref, watch } from 'vue';
+import { computed, isRef, onMounted, ref, useSlots, watch } from 'vue';
 import Quill from 'quill';
 import type { EmitterSource, QuillOptions, Range } from 'quill';
 import { hasOwn, isFunction } from '@vue/shared';
@@ -31,13 +31,14 @@ const emit = defineEmits<{
   (e: 'focus', evnet: FocusEvent): void;
   (e: 'blur', evnet: FocusEvent): void;
 }>();
+const slots = useSlots();
 
 let quill: Quill;
 const containerRef = ref<HTMLDivElement>();
 const __modelValue = ref<string | Delta>(new Delta());
 const model = computed<string | Delta>({
   get() {
-    return props.modelValue || __modelValue.value;
+    return props.modelValue ?? __modelValue.value;
   },
   set(value: any) {
     __modelValue.value = value;
@@ -137,7 +138,7 @@ const setModelValueToQuill = () => {
   quill.setSelection(range);
 };
 const updateContent = () => {
-  emit(UPDATE_MODEL_EVENT, getContentByType(props.contentType));
+  model.value = getContentByType(props.contentType); ;
 };
 const bindEvents = () => {
   quill.on(TEXT_CHANGE_EVENT, (delta, oldDelta, source) => {
@@ -162,12 +163,29 @@ const bindEvents = () => {
 const initialize = () => {
   if (containerRef.value) {
     quill = new Quill(containerRef.value, resolveQuillOptions());
-    model.value = quill.getContents();
-    emit(READY_EVENT);
-    if (!props.modelValue) {
-      model.value = props.contentType === 'delta' ? new Delta() : '';
-      emit(UPDATE_MODEL_EVENT, model.value);
+    if (slots.default) {
+      if (props.contentType === 'delta') {
+        if ((model.value as Delta).length() > 0) {
+          setModelValueToQuill();
+        }
+        else {
+          updateContent();
+        }
+      }
+      else if (['html', 'text'].includes(props.contentType)) {
+        if ((model.value as string).length > 0) {
+          setModelValueToQuill();
+        }
+        else {
+          updateContent();
+        }
+      }
     }
+    else {
+      setModelValueToQuill();
+      updateContent();
+    }
+    emit(READY_EVENT);
     bindEvents();
   }
 };
